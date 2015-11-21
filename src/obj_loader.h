@@ -84,9 +84,9 @@ private:
 
 public:
 
-	std::vector<glm::vec3> vertices;
-	std::vector<glm::vec2> texCoord;
-	std::vector<glm::vec3> normals;
+	std::vector<glm::vec3> m_vertices;
+	std::vector<glm::vec2> m_texCoord;
+	std::vector<glm::vec3> m_normals;
 	unsigned int nbrVertices;
 
 	OBJModel(const std::string& fileName) {
@@ -129,17 +129,17 @@ public:
 				case 'f': // Indices
 					indices = parseObjFace(line);
 
-					vertices.push_back(vertices_tmp[indices[0].x]);
-					vertices.push_back(vertices_tmp[indices[0].y]);
-					vertices.push_back(vertices_tmp[indices[0].z]);
+					m_vertices.push_back(vertices_tmp[indices[0].x]);
+					m_vertices.push_back(vertices_tmp[indices[0].y]);
+					m_vertices.push_back(vertices_tmp[indices[0].z]);
 
-					texCoord.push_back(texCoord_tmp[indices[1].x]);
-					texCoord.push_back(texCoord_tmp[indices[1].y]);
-					texCoord.push_back(texCoord_tmp[indices[1].z]);
+					m_texCoord.push_back(texCoord_tmp[indices[1].x]);
+					m_texCoord.push_back(texCoord_tmp[indices[1].y]);
+					m_texCoord.push_back(texCoord_tmp[indices[1].z]);
 
-					normals.push_back(normals_tmp[indices[2].x]);
-					normals.push_back(normals_tmp[indices[2].y]);
-					normals.push_back(normals_tmp[indices[2].z]);
+					m_normals.push_back(normals_tmp[indices[2].x]);
+					m_normals.push_back(normals_tmp[indices[2].y]);
+					m_normals.push_back(normals_tmp[indices[2].z]);
 
 					break;
 				default:

@@ -3,7 +3,6 @@
 #include <SDL2\SDL_image.h>
 #include <iostream>
 #include <string>
-#include <cassert>
 
 class Texture {
 private:

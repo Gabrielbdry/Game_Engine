@@ -4,39 +4,6 @@
 #include "obj_loader.h"
 #include <vector>
 
-class Vertex {
-private:
-
-	glm::vec3 pos;
-	glm::vec2 texcoord;
-	glm::vec3 normal;
-
-public:
-
-	Vertex(const glm::vec3& pos, const glm::vec2& texcord, const glm::vec3& normal = glm::vec3(0, 0, 0)) {
-		this->pos = pos;
-		this->texcoord = texcord;
-		this->normal = normal;
-	}
-
-	~Vertex() {
-
-	}
-
-	glm::vec3* getPos() {
-		return &pos;
-	}
-
-	glm::vec2* getTexCoord() {
-		return &texcoord;
-	}
-
-	glm::vec3* getNormal() {
-		return &normal;
-	}
-
-};
-
 class Mesh {
 private:
 
@@ -54,7 +21,7 @@ private:
 
 	void initMesh(const OBJModel& model) {
 
-		m_drawCount = model.vertices.size();
+		m_drawCount = model.m_vertices.size();
 
 		glGenVertexArrays(1, &m_vertexArrayObject);
 		glBindVertexArray(m_vertexArrayObject);
@@ -63,21 +30,21 @@ private:
 
 		//Position
 		glBindBuffer(GL_ARRAY_BUFFER, m_vertexArrayBuffers[POSITION_VB]);
-		glBufferData(GL_ARRAY_BUFFER, model.vertices.size() * sizeof(model.vertices[0]), &model.vertices[0], GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, model.m_vertices.size() * sizeof(model.m_vertices[0]), &model.m_vertices[0], GL_STATIC_DRAW);
 
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
 		
 		//TexCoords
 		glBindBuffer(GL_ARRAY_BUFFER, m_vertexArrayBuffers[TEXCOORD_VB]);
-		glBufferData(GL_ARRAY_BUFFER, model.vertices.size() * sizeof(model.texCoord[0]), &model.texCoord[0], GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, model.m_vertices.size() * sizeof(model.m_texCoord[0]), &model.m_texCoord[0], GL_STATIC_DRAW);
 
 		glEnableVertexAttribArray(1);
 		glVertexAttribPointer(1, 2, GL_FLOAT, false, 0, 0);
 
 		//Normals
 		glBindBuffer(GL_ARRAY_BUFFER, m_vertexArrayBuffers[NORMAL_VB]);
-		glBufferData(GL_ARRAY_BUFFER, model.normals.size() * sizeof(model.normals[0]), &model.normals[0], GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, model.m_normals.size() * sizeof(model.m_normals[0]), &model.m_normals[0], GL_STATIC_DRAW);
 
 		glEnableVertexAttribArray(2);
 		glVertexAttribPointer(2, 3, GL_FLOAT, false, 0, 0);

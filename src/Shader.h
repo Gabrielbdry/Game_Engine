@@ -11,6 +11,7 @@ private:
 	
 	enum {
 		TRANSFORM_U,
+		AMBIENT_U,
 
 		NUM_UNIFORMS
 	};
@@ -88,6 +89,7 @@ public:
 		CheckShaderError(m_program, GL_VALIDATE_STATUS, true, "Error: program is invalid: ");
 
 		m_uniforms[TRANSFORM_U] = glGetUniformLocation(m_program, "transform");
+		m_uniforms[AMBIENT_U] = glGetUniformLocation(m_program, "ambientLight");
 	}
 
 	~Shader() {
@@ -104,10 +106,11 @@ public:
 		glUseProgram(m_program);
 	}
 
-	void update(const Transform& tranform, const Camera& camera) {
+	void update(const Transform* tranform, const Camera* camera, glm::vec3 ambientLight) {
 
-		glm::mat4 model = camera.getViewProjection() * tranform.getModel();
+		glm::mat4 model = camera->getViewProjection() * tranform->getModel();
 
 		glUniformMatrix4fv(m_uniforms[TRANSFORM_U], 1, GL_FALSE, &model[0][0]);
+		glUniform3fv(m_uniforms[AMBIENT_U], 1, &ambientLight[0]);
 	}
 };
