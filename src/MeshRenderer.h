@@ -22,7 +22,7 @@ public:
 	void Render(Shader* shader, Transform* transform, Camera* camera) {
 		shader->bind();
 		m_material->getTexture()->Bind();
-		shader->update(transform, camera, glm::vec3(0.2, 0.2, 0.15));
+		shader->updateUniforms(transform, camera);
 		m_mesh->Draw();
 	}
 };

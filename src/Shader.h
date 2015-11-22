@@ -2,24 +2,19 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <list>
 #include <GL\glew.h>
 #include "transform.h"
 #include "Camera.h"
+#include "Uniform.h"
 
 class Shader {
 private:
-	
-	enum {
-		TRANSFORM_U,
-		AMBIENT_U,
-
-		NUM_UNIFORMS
-	};
 
 	static const unsigned int NUM_SHADERS = 2;
 	GLuint m_program;
 	GLuint m_shaders[NUM_SHADERS];
-	GLuint m_uniforms[NUM_UNIFORMS];
+	std::list<Uniform*> m_uniforms;
 
 	static std::string LoadShader(const std::string& fileName) {
 		std::ifstream file;
@@ -88,8 +83,7 @@ public:
 		glValidateProgram(m_program);
 		CheckShaderError(m_program, GL_VALIDATE_STATUS, true, "Error: program is invalid: ");
 
-		m_uniforms[TRANSFORM_U] = glGetUniformLocation(m_program, "transform");
-		m_uniforms[AMBIENT_U] = glGetUniformLocation(m_program, "ambientLight");
+		m_uniforms.push_back(new Uniform("transform", "Matrix4fv", glGetUniformLocation(m_program, "transform")));
 	}
 
 	~Shader() {
@@ -106,11 +100,19 @@ public:
 		glUseProgram(m_program);
 	}
 
-	void update(const Transform* tranform, const Camera* camera, glm::vec3 ambientLight) {
+	void AddUniform() {
 
-		glm::mat4 model = camera->getViewProjection() * tranform->getModel();
+	}
 
-		glUniformMatrix4fv(m_uniforms[TRANSFORM_U], 1, GL_FALSE, &model[0][0]);
-		glUniform3fv(m_uniforms[AMBIENT_U], 1, &ambientLight[0]);
+	void updateUniforms(Transform* transform, Camera* camera) {
+		glm::mat4 model = camera->getViewProjection() * transform->getModel();
+		for (Uniform* uniform : m_uniforms) {
+			if (uniform->getName() == "transform") {
+				glUniformMatrix4fv(uniform->getLocation(), 1, GL_FALSE, &model[0][0]);
+			}
+			else if (uniform->getType() == "BaseLigth") {
+				int i = 0;
+			}
+		}
 	}
 };
