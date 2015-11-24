@@ -1,9 +1,13 @@
 #pragma once
 #include <list>
+#include <map>
+#include <string>
+#include "BaseLight.h"
 #include "GameComponent.h"
 #include "Transform.h"
-#include "Shader.h"
-#include "Camera.h"
+
+class Camera;
+class Shader;
 
 class GameObject {
 private:
@@ -21,9 +25,9 @@ public:
 		m_components.push_back(component);
 	}
 
-	void Render(Shader* shader, Camera* camera) {
+	void Render(Shader* shader, Camera* camera, std::map<std::string, BaseLight*> lights) {
 		for (GameComponent* it : m_components) {
-			it->Render(shader, m_transform, camera);
+			it->Render(shader, m_transform, camera, lights);
 		}
 
 	}

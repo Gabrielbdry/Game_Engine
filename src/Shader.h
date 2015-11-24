@@ -3,10 +3,12 @@
 #include <fstream>
 #include <string>
 #include <list>
+#include <map>
 #include <GL\glew.h>
-#include "transform.h"
+#include "Transform.h"
 #include "Camera.h"
 #include "Uniform.h"
+#include "BaseLight.h"
 
 class Shader {
 private:
@@ -14,7 +16,7 @@ private:
 	static const unsigned int NUM_SHADERS = 2;
 	GLuint m_program;
 	GLuint m_shaders[NUM_SHADERS];
-	std::list<Uniform*> m_uniforms;
+	std::map<std::string, Uniform*> m_uniforms;
 
 	static std::string LoadShader(const std::string& fileName) {
 		std::ifstream file;
@@ -83,7 +85,9 @@ public:
 		glValidateProgram(m_program);
 		CheckShaderError(m_program, GL_VALIDATE_STATUS, true, "Error: program is invalid: ");
 
-		m_uniforms.push_back(new Uniform("transform", "Matrix4fv", glGetUniformLocation(m_program, "transform")));
+		m_uniforms["transform"] = new Uniform("transform", "Matrix4fv", glGetUniformLocation(m_program, "transform"));
+		m_uniforms["baseLight.color"] = new Uniform("baseLight", "BaseLight", glGetUniformLocation(m_program, "baseLight.color"));
+		m_uniforms["baseLight.intensity"] = new Uniform("baseLight", "BaseLight", glGetUniformLocation(m_program, "baseLight.intensity"));
 	}
 
 	~Shader() {
@@ -100,19 +104,33 @@ public:
 		glUseProgram(m_program);
 	}
 
-	void AddUniform() {
-
+	void AddUniform(std::string name, std::string type) {
+		GLint location = glGetUniformLocation(m_program, name.c_str());
+		m_uniforms[name] = (new Uniform(name, type, location));
 	}
 
-	void updateUniforms(Transform* transform, Camera* camera) {
+	void updateUniforms(Transform* transform, Camera* camera, std::map<std::string, BaseLight*> lights) {
 		glm::mat4 model = camera->getViewProjection() * transform->getModel();
-		for (Uniform* uniform : m_uniforms) {
-			if (uniform->getName() == "transform") {
-				glUniformMatrix4fv(uniform->getLocation(), 1, GL_FALSE, &model[0][0]);
+		for (auto uniform : m_uniforms) {
+			if (uniform.second->getName() == "transform") {
+				glUniformMatrix4fv(uniform.second->getLocation(), 1, GL_FALSE, &model[0][0]);
 			}
-			else if (uniform->getType() == "BaseLigth") {
-				int i = 0;
+			else if (uniform.second->getType() == "BaseLight") {
+				setUniformBaseLight(uniform.second->getName(), lights[uniform.second->getName()]);
 			}
 		}
+	}
+
+	void setUniform3fv(GLint location, glm::vec3 fvec3) {
+		glUniform3fv(location, 1, &fvec3[0]);
+	}
+
+	void setUniform1f(GLint location, float f) {
+		glUniform1f(location, f);
+	}
+
+	void setUniformBaseLight(std::string name, BaseLight* baseLight) {
+		glUniform3fv(m_uniforms[name + ".color"]->getLocation(), 1, &baseLight->getColor()[0]);
+		glUniform1f(m_uniforms[name + ".intensity"]->getLocation(), baseLight->getIntensity());
 	}
 };

@@ -2,6 +2,7 @@
 #include <SDL2\SDL.h>
 #include "glm\gtx\normalize_dot.hpp"
 #include "Display.h"
+#include "RenderEngine.h"
 #include "Shader.h"
 #include "Mesh.h"
 #include "Texture.h"
@@ -9,11 +10,10 @@
 #include "Camera.h"
 #include "obj_loader.h"
 #include "RessourceManager.h"
+#include "BaseLight.h"
 #include "GameComponent.h"
 #include "GameObject.h"
 #include "MeshRenderer.h"
-#include "BaseLight.h"
-#include "RenderEngine.h"
 
 #define WIDTH 800
 #define HEIGHT 600
@@ -32,6 +32,8 @@ int main(int argc, char** argv) {
 	GameObject* room = new GameObject();
 
 	room->addComponent(new MeshRenderer(RessourceManager::getInstance().getMesh("./res/room.obj"), new Material(RessourceManager::getInstance().getTexture("./res/room.png"))));
+
+	RenderEngine::getInstance().addLight(new BaseLight(glm::vec3(0.1, 0.1, 0.1), 1.0f), "baseLight");
 	
 	while (!display.isClosed()) {
 		display.clear(0.0f, 0.15f, 0.3f, 1.0f);

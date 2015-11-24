@@ -1,12 +1,16 @@
 #pragma once
-#include "Shader.h"
-#include "Transform.h"
-#include "Camera.h"
+#include <map>
+#include <string>
+
+class Camera;
+class Transform;
+class Shader;
+class BaseLight;
 
 class GameComponent {
 private:
 
 public:
 
-	virtual void Render(Shader* shader, Transform* transform, Camera* camera) {}
+	virtual void Render(Shader* shader, Transform* transform, Camera* camera, std::map<std::string, BaseLight*> lights) {}
 };

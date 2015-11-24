@@ -1,10 +1,13 @@
 #pragma once
+#include <map>
 #include "GameComponent.h"
 #include "Mesh.h"
 #include "Material.h"
-#include "Transform.h"
-#include "Shader.h"
-#include "Camera.h"
+
+class BaseLight;
+class Camera;
+class Shader;
+class Transform;
 
 class MeshRenderer : public GameComponent {
 private:
@@ -19,10 +22,10 @@ public:
 		m_material = material;
 	}
 
-	void Render(Shader* shader, Transform* transform, Camera* camera) {
+	void Render(Shader* shader, Transform* transform, Camera* camera, std::map<std::string, BaseLight*> lights) {
 		shader->bind();
 		m_material->getTexture()->Bind();
-		shader->updateUniforms(transform, camera);
+		shader->updateUniforms(transform, camera, lights);
 		m_mesh->Draw();
 	}
 };
