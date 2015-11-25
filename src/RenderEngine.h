@@ -8,6 +8,11 @@ class Shader;
 class BaseLight;
 class Camera;
 
+enum LightType {
+	LIGHT_BASE,
+	LIGHT_POINT
+};
+
 class RenderEngine : public Singleton<RenderEngine> {
 private:
 
@@ -25,7 +30,7 @@ public:
 		return m_lights[name];
 	}
 
-	void addLight(BaseLight* light, std::string name) {
+	void addLight(BaseLight* light, std::string name, LightType type) {
 		m_lights[name] = light;
 	}
 

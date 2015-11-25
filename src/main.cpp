@@ -11,6 +11,7 @@
 #include "obj_loader.h"
 #include "RessourceManager.h"
 #include "BaseLight.h"
+#include "PointLight.h"
 #include "GameComponent.h"
 #include "GameObject.h"
 #include "MeshRenderer.h"
@@ -33,7 +34,8 @@ int main(int argc, char** argv) {
 
 	room->addComponent(new MeshRenderer(RessourceManager::getInstance().getMesh("./res/room.obj"), new Material(RessourceManager::getInstance().getTexture("./res/room.png"))));
 
-	RenderEngine::getInstance().addLight(new BaseLight(glm::vec3(0.1, 0.1, 0.1), 1.0f), "baseLight");
+	RenderEngine::getInstance().addLight(new BaseLight(glm::vec3(0.1, 0.1, 0.1), 1.0f), "baseLight", LIGHT_BASE);
+	RenderEngine::getInstance().addLight(new PointLight(glm::vec3(0.0, 0.0, 0.0), 1.0f, glm::vec3(1.0, 1.0, 1.0), 1.0f), "pointLight.baseLight", LIGHT_POINT);
 	
 	while (!display.isClosed()) {
 		display.clear(0.0f, 0.15f, 0.3f, 1.0f);

@@ -9,6 +9,11 @@ private:
 
 public:
 
+	BaseLight() {
+		m_color = glm::vec3();
+		m_intensity = 0.0f;
+	}
+
 	BaseLight(glm::vec3 color, float intensity) {
 		m_color = color;
 		m_intensity = intensity;
