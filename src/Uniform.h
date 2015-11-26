@@ -16,6 +16,11 @@ public:
 		m_location = location;
 	}
 
+	Uniform(std::string name, std::string type) {
+		m_name = name;
+		m_type = type;
+	}
+
 	std::string getName() {
 		return m_name;
 	}
