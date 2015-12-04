@@ -12,6 +12,7 @@
 #include "RessourceManager.h"
 #include "BaseLight.h"
 #include "PointLight.h"
+#include "SpotLight.h"
 #include "GameComponent.h"
 #include "GameObject.h"
 #include "MeshRenderer.h"
@@ -24,7 +25,7 @@ int main(int argc, char** argv) {
 	SDL_Init(SDL_INIT_EVERYTHING);
 	Display display(800, 600, "Hello world!");
 
-	RenderEngine::getInstance().setCamera(new Camera(glm::vec3(3, 0, -0.5), 70.0f, (float)WIDTH / (float)HEIGHT, 0.01f, 1000.0f));
+	RenderEngine::getInstance().setCamera(new Camera(glm::vec3(2, 0, -0.5), 70.0f, (float)WIDTH / (float)HEIGHT, 0.01f, 1000.0f));
 	RenderEngine::getInstance().setShader(new Shader("./res/basicShader"));
 
 	RessourceManager::getInstance().addMesh("./res/room.obj");
@@ -35,7 +36,10 @@ int main(int argc, char** argv) {
 	room->addComponent(new MeshRenderer(RessourceManager::getInstance().getMesh("./res/room.obj"), new Material(RessourceManager::getInstance().getTexture("./res/room.png"))));
 
 	RenderEngine::getInstance().addLight(new BaseLight(glm::vec3(0.1, 0.1, 0.1), 1.0f), "baseLight", LIGHT_BASE);
-	RenderEngine::getInstance().addLight(new PointLight(glm::vec3(0.5, 0, 2), 3.0f, glm::vec3(1.0, 1.0, 1.0), 1.0f), "pointLight", LIGHT_POINT);
+	//RenderEngine::getInstance().addLight(new PointLight(glm::vec3(0.5, 0, 3.0), 3.0f, glm::vec3(1.0, 1.0, 1.0), 1.0f), "pointLight", LIGHT_POINT);
+	//RenderEngine::getInstance().addLight(new PointLight(glm::vec3(1.5, 0, 2), 3.0f, glm::vec3(1.0, 1.0, 1.0), 1.0f), "pointLight", LIGHT_POINT);
+	//RenderEngine::getInstance().addLight(new PointLight(glm::vec3(1.5, -0.5, 3.0), 3.0f, glm::vec3(1.0, 1.0, 1.0), 1.0f), "pointLight", LIGHT_POINT);
+	RenderEngine::getInstance().addLight(new SpotLight(glm::vec3(0, 0, 1), 0.5f, glm::vec3(1, 0, 3), 3.0f, glm::vec3(1.0, 1.0, 1.0), 1.0f), "spotLight", LIGHT_SPOT);
 	
 	while (!display.isClosed()) {
 		display.clear(0.0f, 0.15f, 0.3f, 1.0f);

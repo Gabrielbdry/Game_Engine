@@ -10,6 +10,7 @@
 #include "Uniform.h"
 #include "BaseLight.h"
 #include "PointLight.h"
+#include "SpotLight.h"
 
 class Shader {
 private:
@@ -104,14 +105,26 @@ public:
 
 		m_uniforms["transform"] = new Uniform("transform", "Matrix4fv", glGetUniformLocation(m_program, "transform"));
 		m_uniforms["baseLight"] = new Uniform("baseLight", "BaseLight");
-		m_uniforms["pointLight"] = new Uniform("pointLight", "PointLight");
-
-		m_locations["baseLight.color"] = glGetUniformLocation(m_program, "baseLight.color");
+		//m_uniforms["pointLight"] = new Uniform("pointLight", "PointLight");
+		m_uniforms["spotLight"] = new Uniform("spotLight", "SpotLight");
+	
+		// PointLight test...
+		/*m_locations["baseLight.color"] = glGetUniformLocation(m_program, "baseLight.color");
 		m_locations["baseLight.intensity"] = glGetUniformLocation(m_program, "baseLight.intensity");
 		m_locations["pointLight.baseLight.color"] = glGetUniformLocation(m_program, "pointLight.baseLight.color");
 		m_locations["pointLight.baseLight.intensity"] = glGetUniformLocation(m_program, "pointLight.baseLight.intensity");
 		m_locations["pointLight.position"] = glGetUniformLocation(m_program, "pointLight.position");
-		m_locations["pointLight.radius"] = glGetUniformLocation(m_program, "pointLight.radius");
+		m_locations["pointLight.radius"] = glGetUniformLocation(m_program, "pointLight.radius");*/
+
+		// SpotLight test...
+		m_locations["baseLight.color"] = glGetUniformLocation(m_program, "baseLight.color");
+		m_locations["baseLight.intensity"] = glGetUniformLocation(m_program, "baseLight.intensity");
+		m_locations["spotLight.pointLight.baseLight.color"] = glGetUniformLocation(m_program, "spotLight.pointLight.baseLight.color");
+		m_locations["spotLight.pointLight.baseLight.intensity"] = glGetUniformLocation(m_program, "spotLight.pointLight.baseLight.intensity");
+		m_locations["spotLight.pointLight.position"] = glGetUniformLocation(m_program, "spotLight.pointLight.position");
+		m_locations["spotLight.pointLight.radius"] = glGetUniformLocation(m_program, "spotLight.pointLight.radius");
+		m_locations["spotLight.direction"] = glGetUniformLocation(m_program, "spotLight.direction");
+		m_locations["spotLight.cutoff"] = glGetUniformLocation(m_program, "spotLight.cutoff");
 
 		/*m_uniforms["pointLight.radius"] = new Uniform("pointLight", "PointLight", glGetUniformLocation(m_program, "pointLight.radius"));
 		m_uniforms["baseLight.color"] = new Uniform("baseLight", "BaseLight", glGetUniformLocation(m_program, "baseLight.color"));
@@ -155,8 +168,10 @@ public:
 				setUniformBaseLight(uniform.second->getName(), lights[uniform.second->getName()]);
 			}
 			else if (uniform.second->getType() == "PointLight") {
-				PointLight* test = dynamic_cast<PointLight*>(lights[uniform.second->getName()]);
 				setUniformPointLight(uniform.second->getName(), dynamic_cast<PointLight*>(lights[uniform.second->getName()]));
+			}
+			else if (uniform.second->getType() == "SpotLight") {
+				setUniformSpotLight(uniform.second->getName(), dynamic_cast<SpotLight*>(lights[uniform.second->getName()]));
 			}
 		}
 	}
@@ -182,5 +197,11 @@ public:
 		setUniformBaseLight(name + ".baseLight", pointLight);
 		setUniform3fv(m_locations[name + ".position"], pointLight->getPosition());
 		setUniform1f(m_locations[name + ".radius"], pointLight->getRadius());
+	}
+
+	void setUniformSpotLight(const std::string& name, SpotLight* spotLight) {
+		setUniformPointLight(name + ".pointLight", spotLight);
+		setUniform3fv(m_locations[name + ".direction"], spotLight->getDirection());
+		setUniform1f(m_locations[name + ".cutoff"], spotLight->getCutOff());
 	}
 };

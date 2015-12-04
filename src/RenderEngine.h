@@ -10,7 +10,8 @@ class Camera;
 
 enum LightType {
 	LIGHT_BASE,
-	LIGHT_POINT
+	LIGHT_POINT,
+	LIGHT_SPOT
 };
 
 class RenderEngine : public Singleton<RenderEngine> {
