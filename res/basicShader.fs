@@ -1,7 +1,5 @@
 #version 150
 
-#define M_PI 3.1415926535897932384626433832795
-
 varying vec3 position0;
 varying vec2 texCoord0;
 varying vec3 normal0;
@@ -36,11 +34,11 @@ vec4 CalcLight(BaseLight base) {
 }
 
 vec4 CalcPointLight(PointLight point) {
-	vec3 ld = (point.position - position0);
+	vec3 ld = (position0 - point.position);
 	float dist = length(ld);
 	if (dist <= point.radius) {
 		float attenuation = dist * dist;
-		return CalcLight(point.baseLight) * pow((1.0 - (dist / point.radius)), 2);
+		return CalcLight(point.baseLight) * pow(1.0 - (dist / point.radius), 2);
 	}
 	return vec4(0.0, 0.0 , 0.0 , 0.0);
 }
@@ -59,8 +57,7 @@ vec4 CalcSpotLight(SpotLight spot) {
 }
 
 void main() {
-	vec4 finalColor = CalcSpotLight(spotLight) + CalcLight(baseLight);
-	//vec4 finalColor = CalcPointLight(pointLight) + CalcLight(baseLight);
+	vec4 finalColor = CalcSpotLight(spotLight) + CalcLight(baseLight) + CalcPointLight(pointLight);
 	finalColor *= texture2D(matTex, texCoord0);
 	gl_FragColor = finalColor;
 }

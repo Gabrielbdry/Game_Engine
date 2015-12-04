@@ -104,17 +104,18 @@ public:
 		CheckShaderError(m_program, GL_VALIDATE_STATUS, true, "Error: program is invalid: ");
 
 		m_uniforms["transform"] = new Uniform("transform", "Matrix4fv", glGetUniformLocation(m_program, "transform"));
+		m_uniforms["camView"] = new Uniform("camView", "Matrix4fv", glGetUniformLocation(m_program, "camView"));
 		m_uniforms["baseLight"] = new Uniform("baseLight", "BaseLight");
-		//m_uniforms["pointLight"] = new Uniform("pointLight", "PointLight");
+		m_uniforms["pointLight"] = new Uniform("pointLight", "PointLight");
 		m_uniforms["spotLight"] = new Uniform("spotLight", "SpotLight");
 	
 		// PointLight test...
-		/*m_locations["baseLight.color"] = glGetUniformLocation(m_program, "baseLight.color");
+		m_locations["baseLight.color"] = glGetUniformLocation(m_program, "baseLight.color");
 		m_locations["baseLight.intensity"] = glGetUniformLocation(m_program, "baseLight.intensity");
 		m_locations["pointLight.baseLight.color"] = glGetUniformLocation(m_program, "pointLight.baseLight.color");
 		m_locations["pointLight.baseLight.intensity"] = glGetUniformLocation(m_program, "pointLight.baseLight.intensity");
 		m_locations["pointLight.position"] = glGetUniformLocation(m_program, "pointLight.position");
-		m_locations["pointLight.radius"] = glGetUniformLocation(m_program, "pointLight.radius");*/
+		m_locations["pointLight.radius"] = glGetUniformLocation(m_program, "pointLight.radius");
 
 		// SpotLight test...
 		m_locations["baseLight.color"] = glGetUniformLocation(m_program, "baseLight.color");
@@ -159,10 +160,12 @@ public:
 	}
 
 	void updateUniforms(Transform* transform, Camera* camera, std::map<std::string, BaseLight*> lights) {
-		glm::mat4 model = camera->getViewProjection() * transform->getModel();
 		for (auto uniform : m_uniforms) {
 			if (uniform.second->getName() == "transform") {
-				setUniformMat4fv(uniform.second->getLocation(), model);
+				setUniformMat4fv(uniform.second->getLocation(), transform->getModel());
+			}
+			else if (uniform.second->getName() == "camView") {
+				setUniformMat4fv(uniform.second->getLocation(), camera->getViewProjection());
 			}
 			else if (uniform.second->getType() == "BaseLight") {
 				setUniformBaseLight(uniform.second->getName(), lights[uniform.second->getName()]);

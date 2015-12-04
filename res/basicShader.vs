@@ -9,9 +9,10 @@ varying vec2 texCoord0;
 varying vec3 normal0;
 
 uniform mat4 transform;
+uniform mat4 camView;
 
 void main() {
-	gl_Position = transform * vec4(position, 1.0);
+	gl_Position = camView * transform * vec4(position, 1.0);
 	position0 = (transform * vec4(position, 1.0)).xyz;
 	texCoord0 = texCoord;
 	normal0 = (transform * vec4(normal, 0.0)).xyz;
